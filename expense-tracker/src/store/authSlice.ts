@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User as FirebaseUser } from 'firebase/auth';
-import { auth } from '../services/firebase';
 import { AuthState, User } from '../types';
+import { signInApp, signUpApp, signOutApp } from '../services/backend';
 
 const initialState: AuthState = {
   user: null,
@@ -12,29 +11,19 @@ const initialState: AuthState = {
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async ({ email, password }: { email: string; password: string }) => {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return {
-      id: userCredential.user.uid,
-      email: userCredential.user.email!,
-      displayName: userCredential.user.displayName || undefined,
-    };
+    return signInApp(email, password);
   }
 );
 
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async ({ email, password }: { email: string; password: string }) => {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    return {
-      id: userCredential.user.uid,
-      email: userCredential.user.email!,
-      displayName: userCredential.user.displayName || undefined,
-    };
+    return signUpApp(email, password);
   }
 );
 
 export const logoutUser = createAsyncThunk('auth/logoutUser', async () => {
-  await signOut(auth);
+  await signOutApp();
 });
 
 const authSlice = createSlice({

@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where, orderBy } from 'firebase/firestore';
-import { db } from '../services/firebase';
 import { ExpenseState, Expense, Category } from '../types';
+import { fetchExpensesForUser, addExpenseForUser, updateExpenseForUser, deleteExpenseForUser } from '../services/backend';
 
 const initialState: ExpenseState = {
   expenses: [],
@@ -21,41 +20,28 @@ const initialState: ExpenseState = {
 export const fetchExpenses = createAsyncThunk(
   'expenses/fetchExpenses',
   async (userId: string) => {
-    const q = query(
-      collection(db, 'expenses'),
-      where('userId', '==', userId),
-      orderBy('date', 'desc')
-    );
-    const querySnapshot = await getDocs(q);
-    const expenses: Expense[] = [];
-    querySnapshot.forEach((doc) => {
-      expenses.push({ id: doc.id, ...doc.data() } as Expense);
-    });
-    return expenses;
+    return fetchExpensesForUser(userId);
   }
 );
 
 export const addExpense = createAsyncThunk(
   'expenses/addExpense',
   async (expense: Omit<Expense, 'id'>) => {
-    const docRef = await addDoc(collection(db, 'expenses'), expense);
-    return { id: docRef.id, ...expense };
+    return addExpenseForUser(expense);
   }
 );
 
 export const updateExpense = createAsyncThunk(
   'expenses/updateExpense',
   async (expense: Expense) => {
-    const { id, ...updateData } = expense;
-    await updateDoc(doc(db, 'expenses', id), updateData);
-    return expense;
+    return updateExpenseForUser(expense);
   }
 );
 
 export const deleteExpense = createAsyncThunk(
   'expenses/deleteExpense',
   async (expenseId: string) => {
-    await deleteDoc(doc(db, 'expenses', expenseId));
+    await deleteExpenseForUser(expenseId);
     return expenseId;
   }
 );
