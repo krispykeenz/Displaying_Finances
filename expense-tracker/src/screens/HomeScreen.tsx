@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import { AppDispatch, RootState } from '../store/store';
 import { fetchExpenses, deleteExpense } from '../store/expenseSlice';
+import { formatZar } from '../utils/format';
 import { Expense } from '../types';
 
 const HomeScreen: React.FC = () => {
@@ -83,7 +84,7 @@ const HomeScreen: React.FC = () => {
           styles.expenseAmount,
           { color: item.type === 'income' ? '#4CAF50' : '#F44336' }
         ]}>
-          {item.type === 'income' ? '+' : '-'}${item.amount.toFixed(2)}
+          {item.type === 'income' ? '+' : '-'}{formatZar(item.amount)}
         </Text>
         <TouchableOpacity onPress={() => handleDeleteExpense(item.id)}>
           <Ionicons name="trash-outline" size={20} color="#FF6B6B" />
@@ -105,10 +106,10 @@ const HomeScreen: React.FC = () => {
           styles.balanceAmount,
           { color: getTotalBalance() >= 0 ? '#4CAF50' : '#F44336' }
         ]}>
-          ${getTotalBalance().toFixed(2)}
+          {formatZar(getTotalBalance())}
         </Text>
         <Text style={styles.monthlyExpenses}>
-          This month: -${getMonthlyExpenses().toFixed(2)}
+          This month: -{formatZar(getMonthlyExpenses())}
         </Text>
       </View>
 

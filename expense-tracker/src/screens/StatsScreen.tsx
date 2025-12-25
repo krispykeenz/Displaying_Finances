@@ -9,6 +9,7 @@ import {
 import { useSelector } from 'react-redux';
 import { PieChart, LineChart } from 'react-native-chart-kit';
 import { RootState } from '../store/store';
+import { formatZar } from '../utils/format';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -113,19 +114,19 @@ const StatsScreen: React.FC = () => {
         <View style={styles.summaryCard}>
           <Text style={styles.summaryLabel}>Total Income</Text>
           <Text style={[styles.summaryAmount, { color: '#4CAF50' }]}>
-            ${totalIncome.toFixed(2)}
+            {formatZar(totalIncome)}
           </Text>
         </View>
         <View style={styles.summaryCard}>
           <Text style={styles.summaryLabel}>Total Expenses</Text>
           <Text style={[styles.summaryAmount, { color: '#F44336' }]}>
-            ${totalExpenses.toFixed(2)}
+            {formatZar(totalExpenses)}
           </Text>
         </View>
         <View style={styles.summaryCard}>
           <Text style={styles.summaryLabel}>This Month</Text>
           <Text style={[styles.summaryAmount, { color: '#FF9800' }]}>
-            ${currentMonthExpenses.toFixed(2)}
+            {formatZar(currentMonthExpenses)}
           </Text>
         </View>
       </View>
